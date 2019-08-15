@@ -1,20 +1,43 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div class="row bg-light text-dark mb-5 p-3 main-nav shadow">
+  <img src="assets/logo-bitax.png" class="img-fluid h-100">
+  <h1 class="ml-5">Bitax File Upload</h1>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<div class="row">
+  <div class="col-md-4 text-center mb-5">
+    <h4>Seleccione Archivos</h4>
+    <div appNgDropFiles [archivos]="archivos" [ngClass]="{ 'file-over': estaSobreElemento }" (mouseSobre)="estaSobreElemento = $event" class="well drop-zone">
+      <h4>Deje caer aquí los archivos</h4>
+      <img src="assets/drop-images.png" class="img-fluid draganddrop">
+    </div>
+  </div>
+
+  <div class="col-md-8 text-center mt-sm-5 mt-md-0 mt-lg-0 mt-xl-0">
+    <h4>Cargar Archivos</h4>
+
+    <input hidden type="file" #uploader (change)="uploadFile($event)"/>
+    <button class="btn btn-secondary mx-3" (click)="uploader.click()">Seleccionar Archivos</button>
+    <button class="btn btn-success mx-3" (click)="cargarArchivos()" [disabled]="archivos.length === 0">Procesar Archivos</button>
+    <button class="btn btn-danger mx-3" (click)="limpiarArchivos()">Limpiar Archivos</button>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th>Nombre Archivo</th>
+          <th>Tamaño</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let archivo of archivos; let i = index;">
+          <td>{{ archivo.nombreArchivo }}</td>
+          <td>{{ archivo.archivo.size / 1024 / 1024 | number: '.2-2'}} MB</td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="this.archivos.splice(i, 1)">X</button>  
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

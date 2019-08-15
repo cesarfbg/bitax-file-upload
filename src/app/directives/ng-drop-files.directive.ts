@@ -1,29 +1,44 @@
-import { Component } from '@angular/core';
-import { FileItem } from './models/file-item';
-import { CargaArchivosService } from './services/carga-archivos.service';
+import { Directive, EventEmitter, ElementRef, HostListener, Input, Output } from '@angular/core';
+import { FileItem } from '../models/file-item';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+@Directive({
+  selector: '[appNgDropFiles]'
 })
-export class AppComponent {
+export class NgDropFilesDirective {
 
-  estaSobreElemento = false;
-  archivos: FileItem[] = [];
+  @Input() archivos: FileItem[] = [];
+  @Output() mouseSobre: EventEmitter<boolean> = new EventEmitter();
 
-  constructor( public cargaArchivosService: CargaArchivosService) {}
+  constructor() { }
 
-  cargarArchivos() {
-    this.cargaArchivosService.cargarArchivos( this.archivos );
+  @HostListener('dragover', ['$event']) public onDragEnter( event: any) {
+    this._prevenirDetener( event );
+    this.mouseSobre.emit( true );
   }
 
-  limpiarArchivos() {
-    this.archivos = [];
+  @HostListener('dragleave', ['$event']) public onDragLeave( event: any) {
+    this.mouseSobre.emit( false );
   }
 
-  uploadFile( event: any ) {
-    const archivosLista = event.target.files;
+  @HostListener('drop', ['$event']) public onDrop( event: any) {
+    const transferencia = this.getTransferencia( event );
+    if ( !transferencia ) {
+      return;
+    }
+    this._extraerArchivos( transferencia.files );
+    this._prevenirDetener( event );
+    this.mouseSobre.emit( false );
+  }
+
+  private getTransferencia( event: any ) {
+    if ( event.dataTransfer ) {
+      return event.dataTransfer;
+    } else if ( event.originalEvent.dataTransfer ) {
+      return event.originalEvent.dataTransfer;
+    }
+  }
+
+  private _extraerArchivos( archivosLista: FileList ) {
     // tslint:disable-next-line: forin
     for ( const propiedad in Object.getOwnPropertyNames(archivosLista) ) {
       const archivoTemporal = archivosLista[propiedad];
@@ -35,6 +50,8 @@ export class AppComponent {
       }
     }
   }
+
+  // Validaciones
 
   private _archivoPuedeSerCargado( archivo: File ): boolean {
     if ( !this._archivoYaFueDropeado( archivo.name ) && this._esPdf( archivo.type ) ) {
@@ -50,6 +67,11 @@ export class AppComponent {
     } else {
       return false;
     }
+  }
+
+  private _prevenirDetener( event ) {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   private _archivoYaFueDropeado( nombreArchivo: string ): boolean {
@@ -69,4 +91,5 @@ export class AppComponent {
       return true;
     }
   }
+
 }
