@@ -15,7 +15,7 @@
   <div class="col-md-8 text-center mt-sm-5 mt-md-0 mt-lg-0 mt-xl-0">
     <h4>Cargar Archivos</h4>
 
-    <input hidden type="file" #uploader (change)="uploadFile($event)"/>
+    <input hidden type="file" #uploader (change)="uploadFile($event)" multiple/>
     <button class="btn btn-secondary mx-3" (click)="uploader.click()">Seleccionar Archivos</button>
     <button class="btn btn-success mx-3" (click)="cargarArchivos()" [disabled]="archivos.length === 0">Procesar Archivos</button>
     <button class="btn btn-danger mx-3" (click)="limpiarArchivos()">Limpiar Archivos</button>
