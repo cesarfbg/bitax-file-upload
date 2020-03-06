@@ -23,7 +23,7 @@ export class CargaArchivosService {
       const formData = new FormData();
       formData.append('file', item.archivo, item.nombreArchivo);
 
-      this.http.post('https://infinite-harbor-57769.herokuapp.com/file/upload', formData, { responseType: 'blob' })
+      this.http.post('http://localhost:3000/file/upload', formData, { responseType: 'blob' })
       .subscribe(data => {
         let nombreDescarga: any = item.nombreArchivo.split('.');
         nombreDescarga.pop();
